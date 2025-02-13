@@ -2,6 +2,7 @@
   "name": "tailwind-nextjs-starter-blog",
   "version": "2.3.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "next dev",
     "dev": "cross-env INIT_CWD=$PWD next dev",
@@ -69,9 +70,6 @@
   "lint-staged": {
     "*.+(js|jsx|ts|tsx)": [
       "eslint --fix"
-    ],
-    "*.+(js|jsx|ts|tsx|json|css|md|mdx)": [
-      "prettier --write"
     ]
   }
 }
