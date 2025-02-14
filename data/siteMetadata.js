@@ -1,5 +1,5 @@
 /** @type {import("pliny/config").PlinyConfig } */
-const siteMetadata = {
+export const siteMetadata = {
   title: 'Next.js Starter Blog',
   author: 'Tails Azimuth',
   headerTitle: 'TailwindBlog',
@@ -100,4 +100,4 @@ const siteMetadata = {
   },
 }
 
-module.exports = siteMetadata
+export default siteMetadata
