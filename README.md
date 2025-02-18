@@ -235,7 +235,7 @@ Edit the layout in `app` or content in `data`. With live reloading, the pages au
 `layouts` - main templates used in pages:
 
 - There are currently 3 post layouts available: `PostLayout`, `PostSimple` and `PostBanner`. `PostLayout` is the default 2 column layout with meta and author information. `PostSimple` is a simplified version of `PostLayout`, while `PostBanner` features a banner image.
-- There are 2 blog listing layouts: `ListLayout`, the layout used in version 1 of the template with a search bar and `ListLayoutWithTags`, currently used in version 2, which omits the search bar but includes a sidebar with information on the tags.
+- There are 2 blog listing layouts: `ListLayout`, the layout used in version 1 of the template with a search bar and `ListLayoutWithtags`, currently used in version 2, which omits the search bar but includes a sidebar with information on the tags.
 
 `app` - pages to route to. Read the [Next.js documentation](https://nextjs.org/docs/app) for more information.
 
@@ -302,16 +302,16 @@ See [Next.js on Netlify](https://docs.netlify.com/integrations/frameworks/next-j
 Run:
 
 ```sh
-$ EXPORT=1 UNOPTIMIZED=1 yarn build
+EXPORT=1 UNOPTIMIZED=1 yarn build
 ```
 
 Then, deploy the generated `out` folder or run `npx serve out` it locally.
 
 > [!IMPORTANT]
-> If deploying with a URL base path, like https://example.org/myblog you need an extra `BASE_PATH` shell-var to the build command:
+> If deploying with a URL base path, like <https://example.org/myblog> you need an extra `BASE_PATH` shell-var to the build command:
 >
 > ```sh
-> $ EXPORT=1 UNOPTIMIZED=1 BASE_PATH=/myblog yarn build
+> EXPORT=1 UNOPTIMIZED=1 BASE_PATH=/myblog yarn build
 > ```
 >
 > => In your code, `${process.env.BASE_PATH || ''}/robots.txt` will print `"/myblog/robots.txt"` in the `out` build (or only `/robots.txt` if `yarn dev`, ie: on localhost:3000)

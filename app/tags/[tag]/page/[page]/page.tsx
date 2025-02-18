@@ -1,9 +1,9 @@
-import { slug } from 'github-slugger'
-import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer'
-import ListLayout from '@/layouts/ListLayoutWithTags'
-import { allBlogs } from 'contentlayer/generated'
+import ListLayout from '@/layouts/ListLayout'
 import tagData from 'app/tag-data.json'
+import { allBlogs } from 'contentlayer/generated'
+import { slug } from 'github-slugger'
 import { notFound } from 'next/navigation'
+import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer'
 
 const POSTS_PER_PAGE = 5
 
