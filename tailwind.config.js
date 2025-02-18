@@ -24,6 +24,11 @@ module.exports = {
             code: {
               color: theme('--color-indigo-500'),
             },
+            // img: {
+            //   borderWidth:   "1px",
+            //   borderStyle:  "solid",
+            //   borderColor: theme('--color-pink-500')
+            // }
           },
         },
         invert: {

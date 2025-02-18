@@ -133,3 +133,9 @@ input:-webkit-autofill:focus {
   display: inline-block;
   vertical-align: middle;
 }
+
+img {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-pink-500);
+}
