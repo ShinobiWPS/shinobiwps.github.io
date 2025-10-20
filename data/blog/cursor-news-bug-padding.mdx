@@ -1,0 +1,26 @@
+---
+date: '2025-10-20'
+title: Cursor's NES layout spaced off
+summary: Cursor NES suggestions were not readable, and the solution was non-intuitive
+
+
+layout: PostBanner
+images: ['https://cdn.sanity.io/images/2hv88549/production/eaf1e4e537b3dedb4fed15bf807a9f73e1da98e3-1600x1000.svg?auto=format']
+
+
+---
+
+
+Some time ago I was fully focused, inside Cursor,inside focus's Cursor and Cursor's focus, when i started noticing something was off, after a few days, or maybe weeks? i don't recall 😅
+Cursor NES suggestions were completely off actually and that made the suggestion, unreadable:
+
+![Pasted image 20250805165021](/static/images/Pasted%20image%2020250805165021.png)
+After quite a while of digging on google, the old ancient way, and some trial-and-error, i found the culprit (and the "bugfix" ), even though, frankly, it didn't make sense:
+
+![Pasted image 20250805165042](/static/images/Pasted%20image%2020250805165042.png)
+
+After i set it to `0`, everything went back to "normal"
+![Pasted image 20250805165054](/static/images/Pasted%20image%2020250805165054.png)
+
+![Pasted image 20250805165150](/static/images/Pasted%20image%2020250805165150.png)
+Even though it was my fault to set the value initially (some time ago), the value is not intuitive in its behavior considering what it affected. This is undocumented and non-intuitive,  definitely worsening the usability in Cursor.
