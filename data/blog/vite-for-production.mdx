@@ -1,0 +1,112 @@
+---
+date: 2025-03-20
+title: Build for production with Vite (cheatsheet)
+summary: After you develop, you have to go public :)
+layout: PostBanner
+images:
+  - 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Vitejs-logo.svg'
+draft: true
+---
+
+
+## 1. Build & optimise with Vite
+
+- **Always build in production mode**  
+    `vite build` automatically sets `NODE_ENV=production`, bundles with Rollup, tree-shakes and minifies. 
+    
+- **Split vendor code** for long-term caching  
+    Use `build.rollupOptions.output.manualChunks` from [Rollup](https://rollupjs.org/configuration-options/#output-manualchunks) to keep dependencies in a separate chunk. 
+    
+- **Inspect & trim bundle size** with `vite-plugin-visualizer` or `rollup-plugin-visualizer`; (if you use latest version of React Router or Tanstack Router, routes are lazy-loaded by default)
+    
+
+## 2. Handle environment variables
+
+- Use Vite’s mode files (`.env.production`, `.env.staging`) and prefix public values with `VITE_`. [vite.dev](https://vite.dev/guide/env-and-mode)
+    
+- Anything secret belongs on the server or in the deployment platform, **never hard-coded** into the bundle (it’s baked in at build time). [v2.vitejs.dev](https://v2.vitejs.dev/guide/env-and-mode)
+> [!CAUTION]
+> Any value stored in Vite environment variables is exposed automatically!.
+    
+
+## 3. Author a multi-stage Dockerfile
+
+
+```dockerfile
+# ---------- build stage ----------
+FROM node:24-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --production=false
+COPY . .
+RUN npm run build          # outputs to /app/dist
+
+# ---------- production stage ----------
+FROM nginx:1.27-alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+HEALTHCHECK CMD wget -qO- http://localhost/ || exit 1
+USER 1001                  # drop root
+```
+
+
+Include a `.dockerignore` (`node_modules`, `.git`, tests) so build context stays tiny.
+
+## 4. (if you use it) NGINX runtime tuning
+
+- Default config for SPAs:
+
+    ```nginx
+    server {   
+      listen 80;   
+      root /usr/share/nginx/html;   
+      location / {
+         try_files $uri /index.html;   
+      }   
+      location ~* \.(js|css|ico|png|svg|woff2?)$ {     
+         expires 1y;                     # aggressive static caching
+         access_log off;   
+         }
+      location / {     
+         try_files $uri /index.html;   
+      }   
+      location ~* \.(js|css|ico|png|svg|woff2?)$ {
+         expires 1y;                     # aggressive static caching     
+         access_log off;   
+      } 
+   }
+    ```
+    
+    Ensures deep links work and static assets are cached heavily. 
+    
+- Add `gzip on; gzip_types text/css application/javascript;` (or `brotli` module) for smaller payloads. [medium.com](https://medium.com/%40tony.aloysius.77/deploying-your-static-website-with-ease-using-nginx-35cca659079f)
+    
+
+## 5. Security & performance extras
+
+1. **Content-Security-Policy headers** in NGINX to block inline script injection. [dev.to](https://dev.to/fab_builder/deploying-a-static-vite-react-app-a-complete-guide-1l76)
+    
+2. (additional) Scan the final image with `docker scan` or Trivy during CI to catch CVEs. [vite.dev](https://vite.dev/guide/env-and-mode)
+    
+
+## 6. CI/CD pattern
+
+- Cache `~/.npm` or your package manager fodler, and Vite’s `node_modules/.vite` between pipeline runs for faster builds. [dev.to](https://dev.to/fab_builder/deploying-a-static-vite-react-app-a-complete-guide-1l76)
+    
+- Use multi-platform builds (`docker buildx build --platform linux/amd64,linux/arm64`) if you target both Intel and ARM servers.
+    
+- Push the image to a registry, then run `docker pull && docker run --rm -d --name web -p 80:80 your/app:tag` on the host.
+
+> You can start with my simple [dockerfiles](https://github.com/ShinobiWPS/Javascript-starter-lite/blob/main/Dockerfile-simplier)
+>
+    
+
+## 7. Verification
+
+- Run `docker history your/app:tag`—size should be tens of MB, not hundreds.
+    
+- Hit `curl -I localhost` inside the container; expect `200` plus your caching headers.
+    
+
+That's it, hopefully it helps :).
