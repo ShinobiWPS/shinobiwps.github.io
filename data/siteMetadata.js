@@ -1,11 +1,11 @@
 /** @type {import("pliny/config").PlinyConfig } */
 export const siteMetadata = {
-  title: `ShinobiWPS's Blog`,
+  title: `Alexandru "ShinobiWPS" Gherasim Blog`,
   author: 'Alexandru Gherasim',
-  headerTitle: `ShinobiWPS's Blog`,
+  headerTitle: `Alexandru Gherasim 's Blog`,
   description: 'Some of my findings and little adventures 🔎',
   language: 'en-us',
-  theme: 'system', // system, dark or light
+  theme: 'system',
   siteUrl: 'https://shinobiwps.dev',
   siteRepo: '',
   //siteLogo: `${process.env.BASE_PATH || ''}/static/images/logo.png`,
@@ -17,7 +17,7 @@ export const siteMetadata = {
   // twitter: 'https://twitter.com/Twitter',
   //facebook: 'https://facebook.com',
   //youtube: 'https://youtube.com',
-  linkedin: 'https://www.linkedin.com/in/alessandrogherasim/',
+  linkedin: 'https://www.linkedin.com/in/alexandrugherasim/',
   //threads: 'https://www.threads.net',
   //instagram: 'https://www.instagram.com',
   //medium: 'https://medium.com',
@@ -41,7 +41,7 @@ export const siteMetadata = {
     // If you are hosting your own Plausible.
     //   src: '', // e.g. https://plausible.my-domain.com/js/script.js
     // },
-    // simpleAnalytics: {},
+    simpleAnalytics: {},
     // posthogAnalytics: {
     //   posthogProjectApiKey: '', // e.g. 123e4567-e89b-12d3-a456-426614174000
     // },
