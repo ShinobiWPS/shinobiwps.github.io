@@ -7,11 +7,15 @@ interface Project {
 
 const projectsData: Project[] = [
   {
-    title: 'A Search Engine',
-    description: `What if you could look up any information in the world? Webpages, images, videos
-    and more. Google has many features to help you find exactly what you're looking
-    for.`,
-    imgSrc: '/static/images/google.png',
+    title: 'Mempeak - Vite plugin to show Heap-memory usage',
+    description: `A convienent way to see the real-time usage of heap-memory in JS`,
+    imgSrc: '/static/images/',
+    href: 'https://www.npmjs.com/package/vite-plugin-mempeak',
+  },
+  {
+    title: 'Open Source contributions',
+    description: `Where I improved something publickly available`,
+    imgSrc: '/static/images/opensource_logo.png',
     href: 'https://www.google.com',
   },
   {
