@@ -1,0 +1,52 @@
+---
+date: 2025-09-20
+title: "Tanstack Start: why you don't need verbatimModuleSyntax"
+summary: it's not obvious..
+layout: PostBanner
+images:
+  - '/static/images/tanstack-start.jpeg'
+---
+
+On a client project, I choose to use Tanstack Start , and while reading the documentation I found this text:
+![tanstac-start-documentation-varbatim-warning](/static/images/tanstack-start-documentation.png)
+I honestly thought "WTF? Why is that??", so i dug depper in this mystery and found something interesting.
+
+First of all: what is a  _side‑effect_ in this context?
+A _side‑effect_ is any code that runs **just because the module is evaluated**, not because you call a function it exports.
+
+- Examples: logging, adding a polyfill, registering a Vue/React component, mutating a global registry, starting a timer, etc.
+    
+- You see them as top‑level statements:
+```ts
+console.log("loaded");
+object_or_Class_or_ThirdPartyService.do(config);
+
+```
+
+Second of all, Tanstack Start can leak server bundle to client, indeed, now imagine you enable that flag, what would happen?
+
+After doing some investigation, during the client / server separation step, let's assume you import something you don't use and a `type` like:
+```ts
+import { somethingUnused, type Thing } from "./only-server-code"
+```  
+that would then:
+- strip the unused import
+```ts
+import { type Thing } from "./only-server-code"
+```     
+- and strip the Type too since is just a type (by `tsc/ esbuild / rollup`) and browsers can't understand TS
+```ts
+import { } from "./only-server-code"
+```
+
+*but* with `verbatimModuleSyntax` enabled, the import remains as is, so the code at the top level of the module, if any, would still execute once,and since our module is something we import on server, 💥*BOOM* : you've got leaked server code on client. 
+
+Is really *that* simple.
+
+Disabling `verbatimModuleSyntax`  (which is the default setting) removes that empty import, but the downside is that if that import has any side-effects, none of them are ran.
+
+You can find more about this behaviour on [TS Documentation](https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax).
+
+
+
+
