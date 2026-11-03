@@ -55,6 +55,37 @@ const securityHeaders = [
   },
 ]
 
+const contentSecurityPolicy = securityHeaders.find(
+  (header) => header.key === 'Content-Security-Policy'
+).value
+
+const headersWithOverrides = (overrides) =>
+  securityHeaders.map(({ key, value }) => ({
+    key,
+    value: overrides[key] ?? value,
+  }))
+
+const draftLandingPageHeaders = headersWithOverrides({
+  'Content-Security-Policy': contentSecurityPolicy.replace(
+    'frame-src giscus.app',
+    "frame-src 'self' giscus.app"
+  ),
+})
+
+// This standalone document is embedded by its route; keep framing same-origin only.
+const draftLandingDocumentHeaders = headersWithOverrides({
+  'Content-Security-Policy': contentSecurityPolicy
+    .replace(
+      "style-src 'self' 'unsafe-inline';",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;"
+    )
+    .replace("font-src 'self';", "font-src 'self' https://fonts.gstatic.com;")
+    .replace('media-src *.s3.amazonaws.com;', 'media-src *.s3.amazonaws.com data:;')
+    .trimEnd()
+    .concat("; frame-ancestors 'self'"),
+  'X-Frame-Options': 'SAMEORIGIN',
+})
+
 const output = process.env.EXPORT ? 'export' : undefined
 const basePath = process.env.BASE_PATH || undefined
 const unoptimized = process.env.UNOPTIMIZED ? true : undefined
@@ -80,9 +111,18 @@ const config = () => {
     },
     async headers() {
       return [
+        // Keep DENY globally; only this route embeds the standalone document.
         {
-          source: '/(.*)',
+          source: '/((?!draft-landing-page$|static/draft-landing-page\\.html$).*)',
           headers: securityHeaders,
+        },
+        {
+          source: '/draft-landing-page',
+          headers: draftLandingPageHeaders,
+        },
+        {
+          source: '/static/draft-landing-page.html',
+          headers: draftLandingDocumentHeaders,
         },
       ]
     },
